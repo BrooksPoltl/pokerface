@@ -11,7 +11,7 @@ const CreateUser = ({ setUserData }) => {
     return user;
   };
   return (
-    <div className="border border-red h-screen">
+    <div className="h-screen">
       <div className="left-2/4 top-2/4 fixed transform
   -translate-y-1/2 -translate-x-1/2 border border-black w-3/12"
       >

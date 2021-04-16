@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { AxiosRequestConfig } from 'axios';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import CreateUser from './components/CreateUser';
 import ShowRooms from './components/ShowRooms';
+import Table from './components/Table';
 
 type User = {
   id: number
@@ -29,11 +31,18 @@ const App = () => {
   }, []);
 
   return (
-    <div>
-      {!userData
-        ? <CreateUser setUserData={setUserData} />
-        : <ShowRooms />}
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/tables/:roomId">
+          <Table />
+        </Route>
+        <Route path="/">
+          {!userData
+            ? <CreateUser setUserData={setUserData} />
+            : <ShowRooms />}
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 
