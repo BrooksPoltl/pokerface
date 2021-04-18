@@ -14,10 +14,18 @@ function Room({ room }) {
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{room.user.name}</div>
+        <div className="text-sm text-gray-900">{room.username}</div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-sm text-gray-900">
+          {room.count}
+          /8
+        </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <Link to={`/tables/${room.id}`} className="text-indigo-600 hover:text-indigo-900">Join</Link>
+        {room.count >= 8
+          ? <span className="text-gray-500">Join</span>
+          : <Link to={`/tables/${room.id}`} className="text-indigo-600 hover:text-indigo-900" disabled={room.count >= 8}>Join</Link>}
       </td>
     </tr>
   );
