@@ -39,6 +39,8 @@ const Table = () => {
           <p className="mx-3">
             {' '}
             {h.name}
+            {' '}
+            {h.cash}
           </p>
           card1:
           {' '}
