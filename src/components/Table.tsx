@@ -37,9 +37,8 @@ const Table = () => {
       { hands.map((h) => (
         <div className="flex m-3" key={h.user_id}>
           <p className="mx-3">
-            user id:
             {' '}
-            {h.user_id}
+            {h.name}
           </p>
           card1:
           {' '}
