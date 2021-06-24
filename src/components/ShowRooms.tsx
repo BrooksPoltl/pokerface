@@ -64,10 +64,3 @@ const ShowRooms = () => {
 };
 
 export default ShowRooms;
-
-/*
-  room
-   user_id: user that created room
-   name of room
-
-*/

@@ -1,14 +1,70 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable camelcase */
+/* eslint-disable no-shadow */
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { Socket } from 'phoenix';
+
+import SelectionButtons from './SelectionButtons';
+import { UserDataContext } from '../App';
+
+type Hand = {
+  user_id: number,
+  name: string,
+  cash: number,
+  card1: string,
+  card2: string,
+  is_big_user?: boolean,
+  is_small_user?: boolean,
+}
+
+type Game = {
+  card1: string,
+  card2: string,
+  card3: string,
+  card4: string,
+  card5: string,
+  big_user_id: number,
+  small_user_id: number,
+  id: number,
+}
+
+type Event = {
+  amt: number,
+  user_id: number
+}
 
 const Table = () => {
   const { roomId } = useParams();
   const [channel, setChannel] = useState(null);
-  const [game, setGame] = useState({
-    card1: null, card2: null, card3: null, card4: null, card5: null,
+  const [activePlayer, setActivePlayer] = useState(null);
+  const userData = useContext(UserDataContext);
+  const [game, setGame] = useState<Game>({
+    card1: null,
+    card2: null,
+    card3: null,
+    card4: null,
+    card5: null,
+    id: null,
+    big_user_id: null,
+    small_user_id: null,
   });
-  const [hands, setHands] = useState([]);
+  const [hands, setHands] = useState<Hand[]>([]);
+
+  // const attachBlindsToHands = (hands: Hand[], game: Game): Hand[] => hands.map(
+  //   (h) => ({
+  //     ...h,
+  //     is_big_user: game.big_user_id === h.user_id,
+  //     is_small_user: game.small_user_id === h.user_id,
+  //   }),
+  // );
+  // const reflectAmountChange = (hands: Hand[], event: Event): Hand[] => hands.map((h) => {
+  //   if (event.user_id === h.user_id) {
+  //     return { ...h, cash: h.cash - event.amt };
+  //   }
+  //   return h;
+  // });
+
   const joinRoom = async () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,16 +74,22 @@ const Table = () => {
       chan.join().receive('ok', () => {
         chan.push('get_table').receive('ok', () => {});
       }).receive('error', (res) => console.log('error:', res));
-      chan.on('get_table', (res) => {
+      chan.on('get_table', ({ game }) => {
         // eslint-disable-next-line no-shadow
-        const { game, hands } = res;
         setGame(game);
+      });
+      chan.on('new_turn', ({ user, hands }) => {
+        console.log(user);
+        setActivePlayer(user);
         setHands(hands);
       });
-
-      setChannel(channel);
+      chan.on('new_event', (e: Event) => {
+        console.log(e);
+      });
+      setChannel(chan);
     }
   };
+
   useEffect(() => {
     joinRoom();
   }, []);
@@ -36,12 +98,15 @@ const Table = () => {
       <p>Welcome to the table!</p>
       { hands.map((h) => (
         <div className="flex m-3" key={h.user_id}>
-          <p className="mx-3">
+          <div className="mx-3">
             {' '}
             {h.name}
             {' '}
             {h.cash}
-          </p>
+            {h.is_big_user && <p>B</p>}
+            {h.is_small_user && <p>S</p>}
+          </div>
+          {activePlayer === h.user_id && <p>Active</p>}
           card1:
           {' '}
           <p className="mx-3">{h.card1 ? h.card1 : '??'}</p>
@@ -86,6 +151,12 @@ const Table = () => {
 
         </div>
       </div>
+      <SelectionButtons
+        gameId={game.id}
+        userData={userData}
+        activePlayer={activePlayer}
+        channel={channel}
+      />
     </div>
   );
 };

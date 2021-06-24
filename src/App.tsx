@@ -11,6 +11,7 @@ type User = {
   name: string
   cash: number
 }
+export const UserDataContext = React.createContext({ id: null, name: null, cash: 0 });
 const App = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const fetchUser = async () => {
@@ -31,18 +32,20 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
-      <Switch>
-        <Route path="/tables/:roomId">
-          <Table />
-        </Route>
-        <Route path="/">
-          {!userData
-            ? <CreateUser setUserData={setUserData} />
-            : <ShowRooms />}
-        </Route>
-      </Switch>
-    </Router>
+    <UserDataContext.Provider value={userData}>
+      <Router>
+        <Switch>
+          <Route path="/tables/:roomId">
+            <Table />
+          </Route>
+          <Route path="/">
+            {!userData
+              ? <CreateUser setUserData={setUserData} />
+              : <ShowRooms />}
+          </Route>
+        </Switch>
+      </Router>
+    </UserDataContext.Provider>
   );
 };
 
