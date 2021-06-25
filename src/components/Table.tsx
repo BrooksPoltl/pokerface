@@ -7,6 +7,7 @@ import { Socket } from 'phoenix';
 
 import SelectionButtons from './SelectionButtons';
 import { UserDataContext } from '../App';
+import EventStream from './EventStream';
 
 type Hand = {
   user_id: number,
@@ -29,9 +30,11 @@ type Game = {
   id: number,
 }
 
-type Event = {
+export type PokerEvent = {
+  type: string,
   amt: number,
-  user_id: number
+  user_id: number,
+  name: string
 }
 
 const Table = () => {
@@ -50,20 +53,7 @@ const Table = () => {
     small_user_id: null,
   });
   const [hands, setHands] = useState<Hand[]>([]);
-
-  // const attachBlindsToHands = (hands: Hand[], game: Game): Hand[] => hands.map(
-  //   (h) => ({
-  //     ...h,
-  //     is_big_user: game.big_user_id === h.user_id,
-  //     is_small_user: game.small_user_id === h.user_id,
-  //   }),
-  // );
-  // const reflectAmountChange = (hands: Hand[], event: Event): Hand[] => hands.map((h) => {
-  //   if (event.user_id === h.user_id) {
-  //     return { ...h, cash: h.cash - event.amt };
-  //   }
-  //   return h;
-  // });
+  const [events, setEvents] = useState<PokerEvent[]>([]);
 
   const joinRoom = async () => {
     const token = localStorage.getItem('token');
@@ -79,12 +69,18 @@ const Table = () => {
         setGame(game);
       });
       chan.on('new_turn', ({ user, hands }) => {
-        console.log(user);
-        setActivePlayer(user);
+        setActivePlayer(user.user_id);
         setHands(hands);
       });
-      chan.on('new_event', (e: Event) => {
-        console.log(e);
+      chan.on('new_event', ({
+        type, amt, user_id, turn,
+      }) => {
+        const hand = turn.hands.find((h) => h.user_id === user_id);
+        setEvents((oldEvents) => [...oldEvents, {
+          type, amt, user_id, name: hand.name,
+        }]);
+        setHands(turn.hands);
+        setActivePlayer(turn.user.user_id);
       });
       setChannel(chan);
     }
@@ -157,6 +153,7 @@ const Table = () => {
         activePlayer={activePlayer}
         channel={channel}
       />
+      <EventStream events={events} />
     </div>
   );
 };
