@@ -68,8 +68,9 @@ const Table = () => {
         // eslint-disable-next-line no-shadow
         setGame(game);
       });
-      chan.on('new_turn', ({ user, hands }) => {
-        setActivePlayer(user.user_id);
+      chan.on('new_turn', ({ user_id, hands }) => {
+        // TODO: I probably don't need this
+        setActivePlayer(user_id);
         setHands(hands);
       });
       chan.on('new_event', ({
@@ -80,7 +81,12 @@ const Table = () => {
           type, amt, user_id, name: hand.name,
         }]);
         setHands(turn.hands);
-        setActivePlayer(turn.user.user_id);
+        setActivePlayer(turn.user_id);
+      });
+      chan.on('new_game', ({ hands, game, user_id }) => {
+        setGame(game);
+        setHands(hands);
+        setActivePlayer(user_id);
       });
       setChannel(chan);
     }
@@ -146,6 +152,16 @@ const Table = () => {
           </p>
 
         </div>
+        <p>
+          BIG USER ID
+          {' '}
+          {game.big_user_id}
+        </p>
+        <p>
+          SMALL USER ID
+          {' '}
+          {game.small_user_id}
+        </p>
       </div>
       <SelectionButtons
         gameId={game.id}
