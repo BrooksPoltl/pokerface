@@ -18,7 +18,7 @@ function EventStream({
     return 'Error with Event';
   };
   return (
-    <div className="border-2">
+    <div className="border-2 absolute top-2/4 left-24 w-2/12">
       <div className="underline">
         <p>Events!</p>
       </div>

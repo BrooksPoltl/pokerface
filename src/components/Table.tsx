@@ -15,8 +15,7 @@ type Hand = {
   cash: number,
   card1: string,
   card2: string,
-  is_big_user?: boolean,
-  is_small_user?: boolean,
+  amount_bet_this_round: number,
 }
 
 type Game = {
@@ -25,6 +24,7 @@ type Game = {
   card3: string,
   card4: string,
   card5: string,
+  pot_size: number,
   big_user_id: number,
   small_user_id: number,
   id: number,
@@ -49,6 +49,7 @@ const Table = () => {
     card4: null,
     card5: null,
     id: null,
+    pot_size: 0,
     big_user_id: null,
     small_user_id: null,
   });
@@ -188,6 +189,10 @@ const Table = () => {
               {game.card5 ? transformCardToUnicode(game.card5) : transformCardToUnicode('??') }
             </p>
           </div>
+          <div className="flex border-2 mt-4">
+            <p className="mx-4">Pot Size:</p>
+            <p className="mx-2">{game.pot_size || 0}</p>
+          </div>
         </div>
         {/* <p>
           BIG USER ID
@@ -218,7 +223,11 @@ const Table = () => {
                 {' '}
                 {h.cash}
               </p>
+              {game.big_user_id === h.user_id && <p>{'\u24B7'}</p>}
+              {game.small_user_id === h.user_id && <p className="text-xs">{'\u24E2'}</p>}
+              <p>{h.amount_bet_this_round}</p>
             </div>
+
           </div>
         ))}
       </div>

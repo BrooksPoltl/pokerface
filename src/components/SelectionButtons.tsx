@@ -10,7 +10,7 @@ function SelectionButtons({
       .receive('error', (res) => console.log('error:', res));
   };
   return (
-    <div>
+    <div className="border-2 absolute top-2/4 right-24 w-2/12">
       <button
         className="disabled:opacity-50 disabled:cursor-not-allowed"
         type="button"
