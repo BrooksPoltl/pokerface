@@ -6,8 +6,8 @@ function SelectionButtons({
 }) {
   const sendEvent = (event: string, amt: number) => {
     channel.push('new_event', { body: { event, amt, gameId } })
-      .receive('ok', () => {})
-      .receive('error', (res) => console.log('error:', res));
+      .receive('ok', () => {});
+    // .receive('error', (res) => console.log('error:', res));
   };
   return (
     <div className="border-2 absolute top-2/4 right-24 w-2/12">

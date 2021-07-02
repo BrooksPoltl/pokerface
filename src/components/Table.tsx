@@ -64,7 +64,8 @@ const Table = () => {
       const chan = socket.channel(`tables:${roomId}`, {});
       chan.join().receive('ok', () => {
         chan.push('get_table').receive('ok', () => {});
-      }).receive('error', (res) => console.log('error:', res));
+      });
+      // .log('error:', res));
       chan.on('get_table', ({ game }) => {
         // eslint-disable-next-line no-shadow
         setGame(game);
