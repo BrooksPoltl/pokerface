@@ -31,9 +31,9 @@ function SelectionButtons({
         className="disabled:opacity-50 disabled:cursor-not-allowed"
         type="button"
         disabled={activePlayer !== (userData && userData.id)}
-        onClick={() => sendEvent('raise', 0)}
+        onClick={() => sendEvent('raise', 20)}
       >
-        Raise
+        Raise 20
       </button>
     </div>
   );

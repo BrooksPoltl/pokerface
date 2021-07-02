@@ -15,6 +15,10 @@ function EventStream({
       }
       return `${e.name} has called ${e.amt}`;
     }
+    if (e.type === 'raise') {
+      return `${e.name} has raised ${e.amt}`;
+    }
+
     return 'Error with Event';
   };
   return (
