@@ -59,7 +59,9 @@ const Table = () => {
   const joinRoom = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      const socket = new Socket('ws://localhost:4000/socket', { params: { token } });
+      const baseURL = process.env.NODE_ENV === 'development' ? 'ws://localhost:4000/api' : 'ws://gaga-pokerface.herokuapp.com/api';
+
+      const socket = new Socket(baseURL, { params: { token } });
       await socket.connect();
       const chan = socket.channel(`tables:${roomId}`, {});
       chan.join().receive('ok', () => {
