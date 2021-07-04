@@ -59,7 +59,7 @@ const Table = () => {
   const joinRoom = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      const baseURL = process.env.NODE_ENV === 'development' ? 'ws://localhost:4000/api' : 'ws://gaga-pokerface.herokuapp.com/api';
+      const baseURL = process.env.NODE_ENV === 'development' ? 'ws://localhost:4000/socket' : 'ws://gaga-pokerface.herokuapp.com/socket';
 
       const socket = new Socket(baseURL, { params: { token } });
       await socket.connect();
@@ -117,28 +117,28 @@ const Table = () => {
 
   const generatePosition = (i) => {
     if (i === 0) {
-      return 'top-3/4 left-1/4 transform -translate-y-1/2';
+      return 'top-3/4 left-1/4';
     }
     if (i === 1) {
-      return 'top-2/4 left-1/4 transform -translate-y-1/2';
+      return 'top-2/4 left-1/4';
     }
     if (i === 2) {
-      return 'top-1/4 left-1/4 transform -translate-y-1/2';
+      return 'top-1/4 left-1/4';
     }
     if (i === 3) {
-      return 'top-1/4 left-2/4 transform -translate-y-1/2 -translate-x-1/2';
+      return 'top-1/4 left-2/4 -translate-x-1/2';
     }
     if (i === 4) {
-      return 'top-1/4 left-3/4 transform -translate-y-1/2 -translate-x-full';
+      return 'top-1/4 left-3/4 -translate-x-full';
     }
     if (i === 5) {
-      return 'top-2/4 left-3/4 transform -translate-y-1/2 -translate-x-full';
+      return 'top-2/4 left-3/4 -translate-x-full';
     }
     if (i === 6) {
-      return 'top-3/4 left-3/4 transform -translate-y-1/2 -translate-x-full';
+      return 'top-3/4 left-3/4 -translate-x-full';
     }
     if (i === 7) {
-      return 'top-3/4 left-2/4 transform -translate-y-1/2 -translate-x-1/2';
+      return 'top-3/4 left-2/4 -translate-x-1/2';
     }
     return '';
   };
@@ -160,7 +160,10 @@ const Table = () => {
       Q: 'D',
       K: 'E',
     };
-    const base = `0x1F0${suitObj[card[0]]}${numObj[card.substring(1, card.length)] ? numObj[card.substring(1, card.length)] : card.substring(1, card.length)}`;
+    const base = `0x1F0${suitObj[card[0]]}${
+      numObj[card.substring(1, card.length)]
+        ? numObj[card.substring(1, card.length)]
+        : card.substring(1, card.length)}`;
 
     return getUnicodeCharacter(base);
   };
@@ -197,20 +200,10 @@ const Table = () => {
             <p className="mx-2">{game.pot_size || 0}</p>
           </div>
         </div>
-        {/* <p>
-          BIG USER ID
-          {' '}
-          {game.big_user_id}
-        </p>
-        <p>
-          SMALL USER ID
-          {' '}
-          {game.small_user_id}
-        </p> */}
       </div>
       <div className="">
         { hands.map((h, i) => (
-          <div className={`absolute flex flex-col m-3 ${generatePosition(i)}`} key={h.user_id}>
+          <div className={`absolute flex flex-col m-3  transform -translate-y-1/2 ${generatePosition(i)}`} key={h.user_id}>
             <div className="flex">
               <p className={`mx-3 text-8xl ${!h.card1 || (h.card1 && ['H', 'D'].includes(h.card1[0])) ? 'text-red-600' : 'text-gray-800'}`}>
                 {h.card1 ? transformCardToUnicode(h.card1) : transformCardToUnicode('??')}
@@ -226,8 +219,6 @@ const Table = () => {
                 {' '}
                 {h.cash}
               </p>
-              {game.big_user_id === h.user_id && <p>{'\u24B7'}</p>}
-              {game.small_user_id === h.user_id && <p className="text-xs">{'\u24E2'}</p>}
               <p>{h.amount_bet_this_round}</p>
             </div>
 
