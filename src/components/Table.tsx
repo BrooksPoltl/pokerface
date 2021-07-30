@@ -93,7 +93,6 @@ const Table = () => {
         setActivePlayer(turn.user_id);
       });
       chan.on('game_over', ({ users }) => {
-        console.log(users, userData);
         if (userData !== null) {
           const elem = users.find((u) => u.user_id === userData.id);
           if (!elem) {

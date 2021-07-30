@@ -12,7 +12,6 @@ function SelectionButtons({
 
   const findCash = (id) => {
     const hand = hands.find((h) => h.user_id === id);
-    console.log(hand);
     return hand.cash - hand.amount_bet_this_round;
   };
   return (
