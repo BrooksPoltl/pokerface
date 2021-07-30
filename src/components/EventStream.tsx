@@ -19,6 +19,9 @@ function EventStream({
       return `${e.name} has raised ${e.amt}`;
     }
 
+    if (e.type === 'all-in') {
+      return '';
+    }
     return 'Error with Event';
   };
   return (

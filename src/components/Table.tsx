@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-shadow */
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { Socket } from 'phoenix';
 
@@ -38,6 +38,7 @@ export type PokerEvent = {
 }
 
 const Table = () => {
+  const history = useHistory();
   const { roomId } = useParams();
   const [channel, setChannel] = useState(null);
   const [activePlayer, setActivePlayer] = useState(null);
@@ -87,8 +88,21 @@ const Table = () => {
         if (game) {
           setGame(game);
         }
+
         setHands(turn.hands);
         setActivePlayer(turn.user_id);
+      });
+      chan.on('game_over', ({ users }) => {
+        console.log(users, userData);
+        if (userData !== null) {
+          const elem = users.find((u) => u.user_id === userData.id);
+          if (!elem) {
+            localStorage.clear();
+            setTimeout(() => {
+              history.push('/');
+            }, 100);
+          }
+        }
       });
       chan.on('new_game', ({ hands, game, user_id }) => {
         setGame(game);
@@ -230,6 +244,7 @@ const Table = () => {
         userData={userData}
         activePlayer={activePlayer}
         channel={channel}
+        hands={hands}
       />
       <EventStream events={events} />
     </div>

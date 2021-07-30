@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AxiosRequestConfig } from 'axios';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router, Switch, Route, NavLink,
+} from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 import CreateUser from './components/CreateUser';
 import ShowRooms from './components/ShowRooms';
@@ -33,7 +35,19 @@ const App = () => {
 
   return (
     <UserDataContext.Provider value={userData}>
+
       <Router>
+        <NavLink strict to="/">
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.clear();
+              setUserData(null);
+            }}
+          >
+            signout
+          </button>
+        </NavLink>
         <Switch>
           <Route path="/tables/:roomId">
             <Table />
