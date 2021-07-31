@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import React, { useState } from 'react';
 import axiosInstance from '../axiosInstance';
 
@@ -7,6 +8,11 @@ const CreateUser = ({ setUserData }) => {
     event.preventDefault();
     const { data: { user, token } } = await axiosInstance.post('/user', { name });
     localStorage.setItem('token', token);
+    axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
+      const conf = config;
+      conf.headers.Authorization = token || '';
+      return conf;
+    });
     setName('');
     return user;
   };

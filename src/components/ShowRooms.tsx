@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axiosInstance from '../axiosInstance';
 import Room from './Room';
 
 const ShowRooms = () => {
   const [roomsData, setRoomsData] = useState([]);
   const [name, setName] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
     listRooms();
@@ -17,9 +19,8 @@ const ShowRooms = () => {
 
   const createRoom = async (e) => {
     e.preventDefault();
-    await axiosInstance.post('/rooms', { room: { name } });
-    setName('');
-    listRooms();
+    const { data: { room } } = await axiosInstance.post('/rooms', { room: { name } });
+    history.push(`/tables/${room.id}`);
   };
   return (
     <div>
